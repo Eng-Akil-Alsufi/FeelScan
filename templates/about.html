@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FeelScan - الذكاء الاصطناعي المتقدم</title>
+    <link rel="stylesheet" href="C:\Users\Eng Akil Al-Sufi\Desktop\FeelScan\static\css\styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+</head>
+<body>
+    <header>
+        <div class="logo"><img src="logo.png" alt="FeelScan"></div>
+        <nav>
+            <ul>
+                <li><i class="fas fa-comment"></i> AI Chat</li>
+                <li><i class="fas fa-image"></i> AI Image Generator</li>
+                <li><i class="fas fa-video"></i> AI Video</li>
+                <li><i class="fas fa-music"></i> AI Music</li>
+                <li><i class="fas fa-microphone"></i> AI Voice Chat</li>
+                <li class="login"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</li>
+            </ul>
+        </nav>
+    </header>
+    <div class="content">
+        <div class="title">FeelScan</div>
+        <div class="container">
+            <div class="tab">
+                <button class="btn" data-type="chat">Chat</button>
+                <button class="btn" data-type="image">Image</button>
+                <button class="btn" data-type="video">Video</button>
+                <button class="btn" data-type="music">Music</button>
+            </div>
+            <input type="text" class="chat-input" placeholder="Hey! I'm a smart AI chatbot. Ask me anything!" />
+            <div class="button-container">
+                <button class="button inspire-button">Scan text now</button>
+                <button class="button start-chatting-button">Scan image now</button>
+            </div>
+        </div>
+    </div>
+    <script>
+                // استماع إلى حدث النقر على الأزرار
+                document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const type = this.getAttribute('data-type'); // الحصول على نوع الزر
+                openFileUpload(type); // فتح نافذة رفع الملف المناسب
+            });
+        });
+
+        // دالة لفتح نافذة رفع الملف
+        function openFileUpload(type) {
+            const input = document.createElement('input');
+            input.type = 'file';
+
+            // تحديد أنواع الملفات المسموح بها بناءً على نوع الزر
+            switch (type) {
+                case 'chat':
+                    input.accept = '.txt, .doc, .docx'; // ملفات نصية
+                    break;
+                case 'image':
+                    input.accept = '.jpg, .jpeg, .png, .gif'; // ملفات صور
+                    break;
+                case 'video':
+                    input.accept = '.mp4, .mov, .avi'; // ملفات فيديو
+                    break;
+                case 'music':
+                    input.accept = '.mp3, .wav, .ogg'; // ملفات صوتية
+                    break;
+                default:
+                    input.accept = '*'; // جميع أنواع الملفات
+            }
+
+            // عند اختيار الملف
+            input.onchange = function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    alert(`تم اختيار ملف من نوع ${type}: ${file.name}`);
+                    // هنا يمكنك إضافة الكود لمعالجة الملف
+                }
+            };
+
+            input.click(); // فتح نافذة اختيار الملف
+        }
+
+        // استمع إلى حدث الإدخال في حقل النص
+        const chatInput = document.querySelector('.chat-input');
+
+        chatInput.addEventListener('input', function () {
+            const value = this.value;
+
+            // تحقق من اللغة المدخلة
+            if (/^[\u0600-\u06FF\s]+$/.test(value)) {
+                // إذا كانت اللغة عربية
+                this.style.textAlign = 'right'; // محاذاة النص لليمين
+                this.setAttribute('dir', 'rtl'); // تعيين اتجاه النص
+            } else {
+                // إذا كانت اللغة إنجليزية أو أي لغة أخرى
+                this.style.textAlign = 'left'; // محاذاة النص لليسار
+                this.setAttribute('dir', 'ltr'); // تعيين اتجاه النص
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FeelScan - الذكاء الاصطناعي المتقدم</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+</head>
+<body>
+    <header>
+        <div class="logo"><img src="/static/images/logo.jpg" alt="FeelScan"></div>
+        <nav>
+            <ul>
+                <li><i class="fas fa-comment"></i> AI Chat</li>
+                <li><i class="fas fa-image"></i> AI Image Generator</li>
+                <li><i class="fas fa-video"></i> AI Video</li>
+                <li><i class="fas fa-music"></i> AI Music</li>
+                <li><i class="fas fa-microphone"></i> AI Voice Chat</li>
+                <li class="login"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</li>
+            </ul>
+        </nav>
+    </header>
+    <div class="content">
+        <div class="title">FeelScan</div>
+        <div class="container">
+            <div class="tab">
+                <button class="btn" data-type="chat">Text</button>
+                <button class="btn" data-type="image">Image</button>
+                <button class="btn" data-type="video">Video</button>
+                <button class="btn" data-type="music">Music</button>
+            </div>
+            <input type="text" class="chat-input" placeholder="Hey! I'm a smart AI chatbot. Ask me anything!" />
+            <div class="button-container">
+ <button class="button inspire-button" id="scan-text-button">Scan text now</button>
+                <button class="button start-chatting-button">Scan image now</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        
+        document.getElementById('scan-text-button').addEventListener('click', function () {
+            const textInput = document.querySelector('.chat-input').value;
+            if (textInput) {
+                fetch('/scan_text', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `text=${encodeURIComponent(textInput)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.result); 
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            } else {
+                alert('يرجى إدخال نص قبل الضغط على الزر.');
+            }
+        });
+
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const type = this.getAttribute('data-type'); 
+                openFileUpload(type); 
+            });
+        });
+
+        function openFileUpload(type) {
+            const input = document.createElement('input');
+            input.type = 'file';
+
+            switch (type) {
+                case 'chat':
+                    input.accept = '.txt, .doc, .docx'; 
+                    break;
+                case 'image':
+                    input.accept = '.jpg, .jpeg, .png, .gif';
+                    break;
+                case 'video':
+                    input.accept = '.mp4, .mov, .avi';
+                    break;
+                case 'music':
+                    input.accept = '.mp3, .wav, .ogg'; 
+                    break;
+                default:
+                    input.accept = '*'; 
+            }
+
+            input.onchange = function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    fetch('/upload', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                        } else {
+                            alert(data.result); 
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                }
+            };
+
+            input.click(); 
+        }
+
+        const chatInput = document.querySelector('.chat-input');
+        
+        chatInput.addEventListener('input', function () {
+            const value = this.value;
+
+            
+            if (/^[\u0600-\u06FF\s]+$/.test(value)) {
+                
+                this.style.textAlign = 'right'; 
+                this.setAttribute('dir', 'rtl');
+            } else {
+               
+                this.style.textAlign = 'left'; 
+                this.setAttribute('dir', 'ltr'); 
+            }
+        });
+    </script>
+</body>
+</html>
